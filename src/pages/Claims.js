@@ -99,61 +99,56 @@ function QuickAddModal({ dealers, onSave, onClose }) {
   );
 }
 
+function parseTextToRows(text) {
+  // Try to parse whatever an AI gives us - flexible parser
+  // Handles lines like: "2DJL322  28/11/25  25402303" or "2DJL322 | 28/11/25 | 25402303" etc.
+  const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+  const results = [];
+
+  for (const line of lines) {
+    // Skip header lines
+    if (/kenteken|license|werkorder|datum|date|klant/i.test(line)) continue;
+
+    // Split by common delimiters: tabs, pipes, multiple spaces, semicolons, commas, dashes with spaces
+    const parts = line.split(/[\t|;]|\s+-\s+|\s{2,}/).map(p => p.trim()).filter(p => p.length > 0);
+
+    let licensePlate = '';
+    let woDate = '';
+    let woNumber = '';
+
+    for (const part of parts) {
+      // WO number: 8 digit number
+      if (/^\d{8}$/.test(part)) { woNumber = part; continue; }
+      // Date: DD/MM/YY or DD/MM/YYYY
+      if (/^\d{1,2}\/\d{1,2}\/\d{2,4}$/.test(part)) { woDate = part; continue; }
+      // License plate: alphanumeric with possible dashes, typically 5-12 chars
+      if (/^[A-Z0-9\-]{2,12}$/i.test(part) && !licensePlate && !/^(ford|truck|bv|nv|sa[0-9a-z])/i.test(part)) {
+        licensePlate = part.toUpperCase();
+      }
+    }
+
+    if (woNumber || licensePlate) {
+      results.push({ licensePlate, woDate: parseIcarDate(woDate) || woDate, woNumber, selected: true });
+    }
+  }
+  return results;
+}
+
 function ImportModal({ dealers, onSave, onClose }) {
-  const [step, setStep] = useState('upload');
-  const [loading, setLoading] = useState(false);
+  const [step, setStep] = useState('paste');
   const [error, setError] = useState('');
   const [extracted, setExtracted] = useState([]);
   const [dealerId, setDealerId] = useState('');
+  const [pastedText, setPastedText] = useState('');
 
-  const handleImage = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    setLoading(true);
+  const handleParse = () => {
+    if (!dealerId) { setError('Please select a dealer first.'); return; }
+    if (!pastedText.trim()) { setError('Please paste some text first.'); return; }
+    const rows = parseTextToRows(pastedText);
+    if (rows.length === 0) { setError('Could not find any workorders in the pasted text. Make sure it contains license plates and WO numbers.'); return; }
+    setExtracted(rows);
     setError('');
-
-    try {
-      const base64 = await new Promise((res, rej) => {
-        const reader = new FileReader();
-        reader.onload = () => res(reader.result.split(',')[1]);
-        reader.onerror = rej;
-        reader.readAsDataURL(file);
-      });
-
-      const response = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 2000,
-          messages: [{
-            role: 'user',
-            content: [
-              { type: 'image', source: { type: 'base64', media_type: file.type, data: base64 } },
-              {
-                type: 'text',
-                text: `This is a screenshot from ICAR, a Ford warranty management system. Extract all rows from the table.
-The columns are: Kenteken (license plate), Klant (ignore this), Geopend (date in DD/MM/YY format), Werkorder (WO number - bold numbers).
-Return ONLY a JSON array, no markdown, no explanation:
-[{"licensePlate":"2DJL322","woDate":"28/11/25","woNumber":"25402303"},...]`
-              }
-            ]
-          }]
-        })
-      });
-
-      const data = await response.json();
-      const text = data.content?.[0]?.text || '';
-      const clean = text.replace(/```json|```/g, '').trim();
-      const rows = JSON.parse(clean);
-
-      setExtracted(rows.map(r => ({ ...r, woDate: parseIcarDate(r.woDate), selected: true })));
-      setStep('review');
-    } catch (err) {
-      setError('Could not read the screenshot. Please try again or use Quick Add.');
-    } finally {
-      setLoading(false);
-    }
+    setStep('review');
   };
 
   const toggleRow = (idx) => setExtracted(extracted.map((r, i) => i === idx ? { ...r, selected: !r.selected } : r));
@@ -169,35 +164,35 @@ Return ONLY a JSON array, no markdown, no explanation:
   return (
     <div className="modal-overlay">
       <div className="modal modal-large">
-        <h2>Import from ICAR Screenshot</h2>
+        <h2>Import from ICAR</h2>
 
-        {step === 'upload' && (
+        {step === 'paste' && (
           <>
-            <p className="modal-subtitle">Upload a screenshot from ICAR. The AI will extract WO numbers, dates and license plates automatically.</p>
+            <p className="modal-subtitle">
+              Take your ICAR screenshot, ask an AI to extract the data as text, then paste it here.
+              The format doesn't matter — just paste whatever the AI gives you.
+            </p>
             {error && <div className="form-error">{error}</div>}
             <div className="form-group">
               <label>Dealer (applies to all imported WOs) *</label>
-              <select value={dealerId} onChange={e => setDealerId(e.target.value)}>
+              <select value={dealerId} onChange={e => { setDealerId(e.target.value); setError(''); }}>
                 <option value="">Select dealer...</option>
                 {dealers.map(d => <option key={d.id} value={d.id}>{d.code} — {d.name}</option>)}
               </select>
             </div>
-            <div className="upload-area">
-              {loading ? (
-                <div className="upload-loading">
-                  <div className="spinner" />
-                  <p>Reading screenshot...</p>
-                </div>
-              ) : (
-                <>
-                  <p>📸 Click to upload ICAR screenshot</p>
-                  <p className="upload-hint">{dealerId ? 'Select your screenshot to begin' : 'Select a dealer first'}</p>
-                  <input type="file" accept="image/*" onChange={handleImage} disabled={!dealerId} className="upload-input" />
-                </>
-              )}
+            <div className="form-group">
+              <label>Paste extracted text here *</label>
+              <textarea
+                value={pastedText}
+                onChange={e => { setPastedText(e.target.value); setError(''); }}
+                placeholder={`Paste the text from the AI here, for example:\n\n2DJL322  28/11/25  25402303\n2DDE377  28/11/25  25402301\n2FBP360  28/11/25  25402299\n...`}
+                rows={10}
+                style={{ fontFamily: 'monospace', fontSize: 13 }}
+              />
             </div>
             <div className="form-actions">
               <button className="btn-secondary" onClick={onClose}>Cancel</button>
+              <button className="btn-primary" onClick={handleParse}>Parse →</button>
             </div>
           </>
         )}
@@ -231,7 +226,7 @@ Return ONLY a JSON array, no markdown, no explanation:
             <div className="import-summary">{extracted.filter(r => r.selected).length} of {extracted.length} workorders selected</div>
             <div className="form-actions">
               <button className="btn-secondary" onClick={onClose}>Cancel</button>
-              <button className="btn-secondary" onClick={() => setStep('upload')}>← Back</button>
+              <button className="btn-secondary" onClick={() => setStep('paste')}>← Back</button>
               <button className="btn-primary" onClick={handleSave}>Import Selected</button>
             </div>
           </>
