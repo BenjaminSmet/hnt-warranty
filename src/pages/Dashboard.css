@@ -1,0 +1,363 @@
+.dashboard-page {
+  max-width: 1100px;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 28px;
+}
+
+.page-header h1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1a1a2e;
+}
+
+.page-subtitle {
+  color: #888;
+  margin-top: 4px;
+  font-size: 14px;
+}
+
+.page-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  color: #999;
+}
+
+/* Stat cards */
+.stat-cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.stat-card {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  border: 1px solid #eee;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.stat-value {
+  font-size: 36px;
+  font-weight: 800;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+
+.stat-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a1a2e;
+  margin-bottom: 4px;
+}
+
+.stat-sub {
+  font-size: 12px;
+  color: #aaa;
+}
+
+/* Dashboard grid */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.dashboard-card {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  border: 1px solid #eee;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.dashboard-card.urgent {
+  border-color: #fecaca;
+  background: #fff9f9;
+}
+
+.dashboard-card-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.dashboard-empty {
+  color: #bbb;
+  font-size: 14px;
+  text-align: center;
+  padding: 20px 0;
+}
+
+/* Need action */
+.action-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.action-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #fecaca;
+  gap: 12px;
+}
+
+.action-item-left {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.action-wo {
+  font-weight: 700;
+  font-size: 14px;
+  color: #1a1a2e;
+}
+
+.action-dealer {
+  font-size: 12px;
+  color: #888;
+}
+
+.action-badges {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.action-badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+.action-badge.rejection {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.action-badge.pending-editing {
+  background: #ffedd5;
+  color: #f97316;
+}
+
+/* Basket breakdown */
+.basket-breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.basket-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.basket-row-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 160px;
+}
+
+.basket-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.basket-name {
+  font-size: 13px;
+  color: #444;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 160px;
+}
+
+.basket-row-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.basket-bar-wrap {
+  flex: 1;
+  height: 16px;
+  background: #f5f5f5;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.basket-bar {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.4s ease;
+  min-width: 4px;
+}
+
+.basket-count {
+  font-size: 13px;
+  font-weight: 700;
+  min-width: 20px;
+  text-align: right;
+}
+
+/* Dealer breakdown */
+.dealer-breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dealer-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.dealer-row:last-child { border-bottom: none; }
+
+.dealer-code-badge {
+  background: #e8700a;
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 4px;
+  min-width: 36px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.dealer-name {
+  font-size: 13px;
+  color: #444;
+  flex: 1;
+}
+
+.dealer-counts {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.dealer-open {
+  font-size: 13px;
+  font-weight: 700;
+  color: #1a1a2e;
+}
+
+.dealer-total {
+  font-size: 12px;
+  color: #aaa;
+}
+
+/* This week */
+.week-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.week-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #f5f5f5;
+  gap: 12px;
+}
+
+.week-item:last-child { border-bottom: none; }
+
+.week-item-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+}
+
+.week-wo {
+  font-weight: 700;
+  font-size: 13px;
+  color: #1a1a2e;
+  white-space: nowrap;
+}
+
+.week-dealer {
+  font-size: 12px;
+  font-weight: 600;
+  color: #e8700a;
+}
+
+.week-about {
+  font-size: 12px;
+  color: #888;
+  font-style: italic;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 120px;
+}
+
+.week-baskets {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.basket-badge-sm {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 10px;
+  white-space: nowrap;
+}
+
+.basket-new-sm {
+  background: #f3f4f6;
+  color: #9ca3af;
+  border: 1px solid #e5e7eb;
+}
+
+.basket-more {
+  background: #f3f4f6;
+  color: #6b7280;
+  border: 1px solid #e5e7eb;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .stat-cards { grid-template-columns: repeat(2, 1fr); }
+  .dashboard-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 500px) {
+  .stat-cards { grid-template-columns: 1fr 1fr; }
+}
