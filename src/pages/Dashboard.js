@@ -51,7 +51,7 @@ function Dashboard() {
   // Total open claims (not closed or warranty_done)
   const openClaims = claims.filter(c => {
     const b = getBaskets(c);
-    return !b.includes('closed') && !b.includes('warranty_done');
+    return !b.includes('closed') && !b.includes('warranty_done') && !b.every(x => x === 'to_do');
   });
 
   // Need action: Pending Editing or Rejection
@@ -60,12 +60,18 @@ function Dashboard() {
     return b.includes('pending_editing') || b.includes('rejection');
   });
 
-  // No basket yet
-  const newClaims = claims.filter(c => getBaskets(c).length === 0);
+  // To Do (not yet worked on)
+  const newClaims = claims.filter(c => {
+    const b = getBaskets(c);
+    return b.length === 0 || b.every(x => x === 'to_do');
+  });
 
   // Weekly summary
   const { monday, sunday } = getWeekRange();
   const thisWeek = claims.filter(c => {
+    const b = getBaskets(c);
+    // Exclude claims that are only in To Do — not worked on
+    if (b.every(x => x === 'to_do') || b.length === 0) return false;
     const updated = new Date(c.updatedAt || c.createdAt);
     return updated >= monday && updated <= sunday;
   });
@@ -112,10 +118,10 @@ function Dashboard() {
           sub="rejection or pending editing"
         />
         <StatCard
-          label="No Basket Yet"
+          label="To Do"
           value={newClaims.length}
           color={newClaims.length > 0 ? '#f59e0b' : '#10b981'}
-          sub="not yet processed"
+          sub="not yet worked on"
         />
         <StatCard
           label="This Week"

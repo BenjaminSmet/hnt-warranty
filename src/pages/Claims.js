@@ -5,6 +5,7 @@ import ClaimDetail from './ClaimDetail';
 import './Claims.css';
 
 export const BASKETS = [
+  { id: 'to_do', label: 'To Do', color: '#94a3b8' },
   { id: 'ready_for_approval', label: 'Ready for Approval', color: '#f59e0b' },
   { id: 'pending', label: 'Pending', color: '#3b82f6' },
   { id: 'pending_editing', label: 'Pending Editing', color: '#f97316' },
@@ -288,7 +289,7 @@ function Claims() {
     const now = new Date().toISOString();
     await addDoc(collection(db, 'claims'), {
       ...formData,
-      baskets: [],
+      baskets: ['to_do'],
       flags: [],
       difficulty: 1,
       commentary: '',
