@@ -427,3 +427,45 @@
   .wo-dealer { display: none; }
   .header-actions { flex-direction: column; gap: 8px; }
 }
+
+.basket-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.form-warning {
+  background: #fffbeb;
+  border: 1px solid #fcd34d;
+  color: #92400e;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  margin-bottom: 20px;
+}
+
+.btn-link-inline {
+  background: none;
+  border: none;
+  color: #e8700a;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+}
+
+.dupe-tag {
+  font-size: 11px;
+  font-weight: 600;
+  background: #fef3c7;
+  color: #92400e;
+  padding: 2px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.row-duplicate td {
+  opacity: 0.5;
+  background: #fffbeb;
+}

@@ -436,3 +436,9 @@
     justify-content: flex-start;
   }
 }
+
+.label-hint {
+  font-weight: 400;
+  color: #aaa;
+  font-size: 12px;
+}

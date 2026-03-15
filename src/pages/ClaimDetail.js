@@ -1,10 +1,15 @@
 import { useState } from 'react';
 import { updateDoc, doc } from 'firebase/firestore';
 import { db } from '../firebase';
-import { BASKETS, FLAGS, DIFFICULTIES, BasketBadge } from './Claims';
+import { BASKETS, FLAGS, DIFFICULTIES } from './Claims';
 import './ClaimDetail.css';
 
 function ClaimDetail({ claim, dealers, onBack, onDelete }) {
+  // Normalize baskets — support both old single basket and new array
+  const initialBaskets = Array.isArray(claim.baskets)
+    ? claim.baskets
+    : (claim.basket ? [claim.basket] : []);
+
   const [form, setForm] = useState({
     woNumber: claim.woNumber || '',
     woDate: claim.woDate || '',
@@ -12,7 +17,7 @@ function ClaimDetail({ claim, dealers, onBack, onDelete }) {
     vin: claim.vin || '',
     licensePlate: claim.licensePlate || '',
     about: claim.about || '',
-    basket: claim.basket || null,
+    baskets: initialBaskets,
     flags: claim.flags || [],
     difficulty: claim.difficulty || 1,
     commentary: claim.commentary || '',
@@ -29,10 +34,14 @@ function ClaimDetail({ claim, dealers, onBack, onDelete }) {
   const handleSave = async () => {
     setSaving(true);
     const now = new Date().toISOString();
-    const basketChanged = claim.basket !== form.basket;
+
+    // Track basket changes for history
+    const prevBaskets = initialBaskets.slice().sort().join(',');
+    const newBaskets = form.baskets.slice().sort().join(',');
+    const basketChanged = prevBaskets !== newBaskets;
     const basketHistory = basketChanged
       ? [...(claim.basketHistory || []), {
-          basket: claim.basket,
+          baskets: initialBaskets,
           startDate: claim.basketChangedAt || claim.createdAt,
           endDate: now
         }]
@@ -40,6 +49,7 @@ function ClaimDetail({ claim, dealers, onBack, onDelete }) {
 
     await updateDoc(doc(db, 'claims', claim.id), {
       ...form,
+      basket: null, // clear old field
       basketHistory,
       basketChangedAt: basketChanged ? now : (claim.basketChangedAt || now),
       updatedAt: now,
@@ -47,6 +57,13 @@ function ClaimDetail({ claim, dealers, onBack, onDelete }) {
     setSaving(false);
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
+  };
+
+  const toggleBasket = (basketId) => {
+    const baskets = form.baskets.includes(basketId)
+      ? form.baskets.filter(b => b !== basketId)
+      : [...form.baskets, basketId];
+    setForm({ ...form, baskets });
   };
 
   const toggleFlag = (flagId) => {
@@ -98,9 +115,6 @@ function ClaimDetail({ claim, dealers, onBack, onDelete }) {
     });
   };
 
-  const currentBasket = BASKETS.find(b => b.id === form.basket);
-  const currentDifficulty = DIFFICULTIES.find(d => d.value === form.difficulty);
-
   return (
     <div className="claim-detail-page">
       {/* Header */}
@@ -126,7 +140,6 @@ function ClaimDetail({ claim, dealers, onBack, onDelete }) {
       <div className="detail-body">
         {/* Left column */}
         <div className="detail-left">
-
           {/* Basic info */}
           <div className="detail-card">
             <div className="detail-card-title">Workorder Info</div>
@@ -217,23 +230,22 @@ function ClaimDetail({ claim, dealers, onBack, onDelete }) {
 
         {/* Right column */}
         <div className="detail-right">
-
           {/* Status */}
           <div className="detail-card">
             <div className="detail-card-title">Status</div>
 
             <div className="form-group">
-              <label>Basket</label>
+              <label>Baskets <span className="label-hint">— select all that apply</span></label>
               <div className="basket-picker">
                 {BASKETS.map(b => (
                   <button
                     key={b.id}
                     type="button"
-                    className={`basket-option ${form.basket === b.id ? 'active' : ''}`}
+                    className={`basket-option ${form.baskets.includes(b.id) ? 'active' : ''}`}
                     style={{ '--basket-color': b.color }}
-                    onClick={() => setForm({ ...form, basket: b.id })}
+                    onClick={() => toggleBasket(b.id)}
                   >
-                    {b.label}
+                    {form.baskets.includes(b.id) ? '✓ ' : ''}{b.label}
                   </button>
                 ))}
               </div>
@@ -302,12 +314,15 @@ function ClaimDetail({ claim, dealers, onBack, onDelete }) {
               <div className="detail-card-title">Basket History</div>
               <div className="basket-history">
                 {claim.basketHistory.map((h, i) => {
-                  const basket = BASKETS.find(b => b.id === h.basket);
+                  const basketIds = h.baskets || (h.basket ? [h.basket] : []);
                   const days = Math.round((new Date(h.endDate) - new Date(h.startDate)) / (1000 * 60 * 60 * 24));
                   return (
                     <div key={i} className="history-row">
-                      <span className="history-basket" style={{ color: basket?.color || '#888' }}>
-                        {basket?.label || h.basket}
+                      <span className="history-basket">
+                        {basketIds.map(id => {
+                          const b = BASKETS.find(b => b.id === id);
+                          return b ? <span key={id} style={{ color: b.color, marginRight: 6 }}>{b.label}</span> : null;
+                        })}
                       </span>
                       <span className="history-days">
                         {days === 0 ? 'Less than a day' : `${days} day${days !== 1 ? 's' : ''}`}
@@ -315,10 +330,14 @@ function ClaimDetail({ claim, dealers, onBack, onDelete }) {
                     </div>
                   );
                 })}
-                {form.basket && (
+                {form.baskets.length > 0 && (
                   <div className="history-row history-current">
-                    <span className="history-basket" style={{ color: currentBasket?.color || '#888' }}>
-                      {currentBasket?.label || form.basket} <span className="current-tag">current</span>
+                    <span className="history-basket">
+                      {form.baskets.map(id => {
+                        const b = BASKETS.find(b => b.id === id);
+                        return b ? <span key={id} style={{ color: b.color, marginRight: 6 }}>{b.label}</span> : null;
+                      })}
+                      <span className="current-tag">current</span>
                     </span>
                     <span className="history-days">
                       {(() => {
