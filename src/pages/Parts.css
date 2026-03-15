@@ -1,0 +1,362 @@
+.parts-page {
+  max-width: 900px;
+}
+
+.category-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.category-tab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background: white;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  color: #666;
+  transition: all 0.2s;
+}
+
+.category-tab:hover {
+  border-color: #e8700a;
+  color: #e8700a;
+}
+
+.category-tab.active {
+  background: #e8700a;
+  border-color: #e8700a;
+  color: white;
+  font-weight: 600;
+}
+
+.tab-count {
+  background: rgba(255,255,255,0.25);
+  padding: 1px 7px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.category-tab:not(.active) .tab-count {
+  background: #f0f0f0;
+  color: #888;
+}
+
+.search-bar {
+  position: relative;
+  margin-bottom: 24px;
+}
+
+.search-bar input {
+  width: 100%;
+  padding: 10px 40px 10px 14px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #1a1a2e;
+  outline: none;
+  background: white;
+  transition: border 0.2s;
+}
+
+.search-bar input:focus {
+  border-color: #e8700a;
+  box-shadow: 0 0 0 3px rgba(232, 112, 10, 0.08);
+}
+
+.search-clear {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #aaa;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.search-clear:hover { color: #555; }
+
+.parts-table-wrapper {
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #eee;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.parts-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.parts-table thead tr {
+  background: #f8f9fa;
+  border-bottom: 1px solid #eee;
+}
+
+.parts-table th {
+  padding: 12px 20px;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #999;
+}
+
+.parts-table td {
+  padding: 14px 20px;
+  border-bottom: 1px solid #f5f5f5;
+  vertical-align: top;
+}
+
+.parts-table tr:last-child td {
+  border-bottom: none;
+}
+
+.parts-table tr:hover td {
+  background: #fafafa;
+}
+
+.code-cell {
+  font-family: 'Courier New', monospace;
+  font-weight: 700;
+  color: #1a1a2e;
+  white-space: nowrap;
+  min-width: 120px;
+}
+
+.name-cell {
+  font-weight: 500;
+  color: #333;
+  min-width: 180px;
+}
+
+.notes-cell {
+  color: #666;
+  font-size: 13px;
+  line-height: 1.5;
+  max-width: 380px;
+}
+
+.no-notes {
+  color: #ccc;
+}
+
+.actions-cell {
+  white-space: nowrap;
+  text-align: right;
+}
+
+.actions-cell .btn-edit,
+.actions-cell .btn-delete {
+  padding: 6px 12px;
+  font-size: 12px;
+}
+
+/* Shared */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 28px;
+}
+
+.page-header h1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1a1a2e;
+}
+
+.page-subtitle {
+  color: #888;
+  margin-top: 4px;
+  font-size: 14px;
+}
+
+.page-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  color: #999;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: #bbb;
+  font-size: 15px;
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modal {
+  background: white;
+  border-radius: 14px;
+  padding: 36px;
+  width: 480px;
+  max-width: 95vw;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal h2 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin-bottom: 28px;
+}
+
+.modal-small { width: 420px; }
+
+.modal-warning {
+  font-size: 15px;
+  color: #444;
+  line-height: 1.6;
+  margin-bottom: 8px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #444;
+  margin-bottom: 8px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #1a1a2e;
+  outline: none;
+  transition: border 0.2s;
+  background: white;
+  font-family: inherit;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: #e8700a;
+  box-shadow: 0 0 0 3px rgba(232, 112, 10, 0.08);
+}
+
+.form-group textarea { resize: vertical; line-height: 1.5; }
+
+.form-error {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  margin-bottom: 20px;
+}
+
+.form-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.btn-primary {
+  background: #e8700a;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+
+.btn-primary:hover { background: #cf6009; }
+
+.btn-secondary {
+  background: #f0f2f5;
+  color: #1a1a2e;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+
+.btn-secondary:hover { background: #e0e2e5; }
+
+.btn-danger {
+  background: #dc2626;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+
+.btn-danger:hover { background: #b91c1c; }
+
+.btn-edit {
+  padding: 7px 14px;
+  background: #f0f2f5;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1a1a2e;
+  margin-right: 6px;
+  transition: background 0.2s;
+}
+
+.btn-edit:hover { background: #e0e2e5; }
+
+.btn-delete {
+  padding: 7px 14px;
+  background: #fff0f0;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  color: #cc3333;
+  transition: background 0.2s;
+}
+
+.btn-delete:hover { background: #ffe0e0; }
